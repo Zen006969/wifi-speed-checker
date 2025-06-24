@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WiFi Speed Checker</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      background: -webkit-linear-gradient(45deg, #00ffcc, #00ccff);
+      background-clip: Zen0;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px 40px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 28px;
+      font-size: 16px;
+      background: linear-gradient(45deg, #00ccff, #3366ff);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #33ccff, #6699ff);
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .loader {
+      font-style: italic;
+      color: #ffcc00;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>📡 Internet Speed Checker</h1>
+    <button onclick="checkSpeed()">🚀 Check Speed</button>
+
+    <div id="result">
+      <p id="status" class="loader"></p>
+      <p id="download"></p>
+      <p id="upload"></p>
+    </div>
+  </div>
+
+  <script>
+    function checkSpeed() {
+      document.getElementById("status").innerText = "⏳ Testing... Please wait...";
+      document.getElementById("download").innerText = "";
+      document.getElementById("upload").innerText = "";
+
+      fetch("/speedtest")
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            document.getElementById("status").innerText = "❌ Error: " + data.error;
+          } else {
+            document.getElementById("status").innerText = "✅ Test Complete";
+            document.getElementById("download").innerText = "🔽 Download Speed: " + data.download + " Mbps";
+            document.getElementById("upload").innerText = "🔼 Upload Speed: " + data.upload + " Mbps";
+          }
+        });
+    }
+  </script>
+</body>
+</html>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
